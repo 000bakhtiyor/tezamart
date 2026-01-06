@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { Public } from 'src/common/metadatas/public.metadata';
@@ -7,6 +15,7 @@ import { LoginResponseDto } from './dto/response/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { ReSendEmailDto } from './dto/re-send-email.dto';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -19,7 +28,7 @@ export class AuthController {
     description: 'Authenticates a user and returns a JWT access token.',
   })
   @ApiResponse({
-    type: LoginResponseDto  
+    type: LoginResponseDto,
   })
   @Post('login')
   async login(@Body() loginDto: LoginDto) {
@@ -33,7 +42,7 @@ export class AuthController {
     description: 'Registers a new user',
   })
   @ApiResponse({
-    type: LoginResponseDto  
+    type: LoginResponseDto,
   })
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
@@ -44,10 +53,10 @@ export class AuthController {
   @ApiOperation({
     operationId: 'verifyEmail',
     summary: 'Verify user email',
-    description: 'Verifies a user\'s email using an OTP code.',
+    description: "Verifies a user's email using an OTP code.",
   })
   @ApiResponse({
-    description: 'Email verified successfully'  
+    description: 'Email verified successfully',
   })
   @Post('verify-email')
   async verifyEmail(@Body() dto: VerifyEmailDto) {
@@ -59,13 +68,25 @@ export class AuthController {
   @ApiOperation({
     operationId: 'resendOtp',
     summary: 'Resend OTP code',
-    description: 'Resends the OTP code to the user\'s email address.',
+    description: "Resends the OTP code to the user's email address.",
   })
   @ApiResponse({
-    description: 'OTP code resent successfully'  
+    description: 'OTP code resent successfully',
   })
   async resendOtp(@Body() dto: ReSendEmailDto) {
     return this.authService.resendOtp(dto.email);
   }
 
+  @Get('me')
+  @ApiOperation({
+    operationId: 'me',
+    summary: 'Get current user',
+    description: 'Returns the currently authenticated user.',
+  })
+  @ApiResponse({
+    description: 'Current user retrieved successfully',
+  })
+  async me(@CurrentUser() user: any) {
+    return this.authService.me(user.sub);
+  }
 }

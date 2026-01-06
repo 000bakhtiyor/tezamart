@@ -6,21 +6,24 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { AuthGuard } from './common/guards/jwt.guard';
 import { CategoriesModule } from './modules/categories/categories.module';
+import { ProductsModule } from './modules/products/products.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      validate: validateEnv
+      validate: validateEnv,
     }),
 
     DatabaseModule,
-    
+
     AuthModule,
 
     UsersModule,
 
     CategoriesModule,
+
+    ProductsModule,
   ],
   providers: [
     {
